@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "angular-odata": [
+        "dist/angular-odata"
+      ],
+      "angular-odata/*": [
+        "dist/angular-odata/*"
+      ]
+    }
   }
 }
