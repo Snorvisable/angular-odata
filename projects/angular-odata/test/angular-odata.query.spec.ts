@@ -6,10 +6,7 @@ import { ODataQuery, IODataQuery, ODataOrderDirection } from '../src/lib/angular
 import { Observable } from 'rxjs';
 
 class ODataTestingConfig extends ODataConfig {
-  constructor() {
-    super();
-    this.rootURL = 'fake-url';
-  }
+  rootURL = 'fake-url';
 }
 
 describe('ODataQuery', () => {
