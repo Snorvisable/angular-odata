@@ -41,13 +41,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.expand(['company', 'address']).execute();
+      query.expand(['company', 'address']).getCollection();
 
       const params = new HttpParams().append('$expand', 'company, address');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
   });
 
@@ -58,13 +58,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.filter(f => f.equal('name', 'Snorvisable')).execute();
+      query.filter(f => f.equal('name', 'Snorvisable')).getCollection();
 
       const params = new HttpParams().append('$filter', 'name eq \'Snorvisable\'');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
     it('Should execute \'notEqual\'', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
@@ -72,13 +72,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.filter(f => f.notEqual('name', 'Snorvisable')).execute();
+      query.filter(f => f.notEqual('name', 'Snorvisable')).getCollection();
 
       const params = new HttpParams().append('$filter', 'name ne \'Snorvisable\'');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
     it('Should execute \'greaterThan\'', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
@@ -86,13 +86,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.filter(f => f.greaterThan('age', 25)).execute();
+      query.filter(f => f.greaterThan('age', 25)).getCollection();
 
       const params = new HttpParams().append('$filter', 'age gt 25');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
     it('Should execute \'greaterThanOrEqual\'', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
@@ -100,13 +100,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.filter(f => f.greaterThanOrEqual('age', 25)).execute();
+      query.filter(f => f.greaterThanOrEqual('age', 25)).getCollection();
 
       const params = new HttpParams().append('$filter', 'age ge 25');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
     it('Should execute \'lessThan\'', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
@@ -114,13 +114,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.filter(f => f.lessThan('age', 25)).execute();
+      query.filter(f => f.lessThan('age', 25)).getCollection();
 
       const params = new HttpParams().append('$filter', 'age lt 25');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
     it('Should execute \'lessThanOrEqual\'', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
@@ -128,13 +128,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.filter(f => f.lessThanOrEqual('age', 25)).execute();
+      query.filter(f => f.lessThanOrEqual('age', 25)).getCollection();
 
       const params = new HttpParams().append('$filter', 'age le 25');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
     it('Should execute concatenated \'and\'', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
@@ -142,13 +142,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.filter(f => f.equal('name', 'Snorvisable').and.greaterThan('age', 25)).execute();
+      query.filter(f => f.equal('name', 'Snorvisable').and.greaterThan('age', 25)).getCollection();
 
       const params = new HttpParams().append('$filter', 'name eq \'Snorvisable\' and age gt 25');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
     it('Should execute concatenated \'or\'', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
@@ -156,13 +156,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.filter(f => f.equal('name', 'Snorvisable').or.greaterThan('age', 25)).execute();
+      query.filter(f => f.equal('name', 'Snorvisable').or.greaterThan('age', 25)).getCollection();
 
       const params = new HttpParams().append('$filter', 'name eq \'Snorvisable\' or age gt 25');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
   });
 
@@ -197,13 +197,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.orderBy('name', ODataOrderDirection.ascending).execute();
+      query.orderBy('name', ODataOrderDirection.ascending).getCollection();
 
       const params = new HttpParams().append('$orderBy', 'name asc');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
     it('Should execute descending', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
@@ -211,13 +211,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.orderBy('age', ODataOrderDirection.descending).execute();
+      query.orderBy('age', ODataOrderDirection.descending).getCollection();
 
       const params = new HttpParams().append('$orderBy', 'age desc');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
   });
 
@@ -240,13 +240,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.select(['id','name','age']).execute();
+      query.select(['id', 'name', 'age']).getCollection();
 
       const params = new HttpParams().append('$select', 'id, name, age');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
   });
 
@@ -269,13 +269,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.skip(66).execute();
+      query.skip(66).getCollection();
 
       const params = new HttpParams().append('$skip', '66');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
   });
 
@@ -298,13 +298,13 @@ describe('ODataQuery', () => {
       spyOn(client, 'get').and.returnValue(new Observable<Response>());
 
       // Act
-      query.top(33).execute();
+      query.top(33).getCollection();
 
       const params = new HttpParams().append('$top', '33');
 
       // Assert
       expect(query).toBeTruthy();
-      expect(client.get).toHaveBeenCalledWith(config, 'resource', params, undefined);
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
   });
 });
