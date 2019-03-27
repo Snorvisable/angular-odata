@@ -1,7 +1,10 @@
 import { IODataFilterQuery, ODataFilterQuery } from './filter/angular-odata-filter-query';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { ODataConfig } from './angular-odata.config';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ODataClient } from './angular-odata.client';
+import { IODataResult } from './angular-odata.result';
 
 export enum ODataOrderDirection {
     ascending = 'asc',
@@ -15,11 +18,14 @@ export interface IODataQuery<T> {
     select(properties: string[]): IODataQuery<T>;
     skip(count: number): IODataQuery<T>;
     top(count: number): IODataQuery<T>;
-    count(): Observable<number>;
-    execute(): Observable<T>;
+    getCount(): Observable<number>;
+    getCollection(): Observable<T[]>;
+    getSingle(key: string | number): Observable<T>;
+    getPropertyValue(key: string | number, property: string): Observable<string>;
+    getComplexPropertyValue<P>(key: string | number, property: string): Observable<P>;
 }
 
-export class ODataQuery<T> implements IODataQuery<T> {
+export class ODataQuery<T> implements IODataQuery<T>{
     private readonly _topOption = '$top';
     private readonly _skipOption = '$skip';
     private readonly _countOption = '$count';
@@ -41,7 +47,7 @@ export class ODataQuery<T> implements IODataQuery<T> {
     private _orderBy: string[] = [];
     private _select: string[] = [];
 
-    constructor(private http: HttpClient, private config: ODataConfig, private resourcePath: string, private key?: number | string) { }
+    constructor(private client: ODataClient, private config: ODataConfig, private resourcePath: string) { }
 
     public expand(properties: string[]): IODataQuery<T> {
         if (!properties)
@@ -87,33 +93,39 @@ export class ODataQuery<T> implements IODataQuery<T> {
         return this;
     }
 
-    public count(): Observable<number> {
+    public getCount(): Observable<number> {
         this._count = true;
-        return this._execute();
+        return null;
     }
 
-    public execute(): Observable<T> {
-        return this._execute();
+    public getPropertyValue(key: string | number, property: string): Observable<string> {
+        if (!key)
+            throw this._getArgumentError('key');
+        if (!property)
+            throw this._getArgumentError('property');
+        return this._execute<IODataResult<string>>(key, property).pipe(map(r => r.value));
     }
 
-    private _execute<R>(): Observable<R> {
-        const url = this._getURL();
-        const queryOptions = this._getQueryOptions();
-        return this.http.get<R>(url, {
-            params: queryOptions
-        });
+    public getComplexPropertyValue<P>(key: string | number, property: string): Observable<P> {
+        if (!key)
+            throw this._getArgumentError('key');
+        if (!property)
+            throw this._getArgumentError('property');
+        return this._execute<P>(key, property);
     }
 
-    private _getURL(): string {
-        let url = this.config.rootURL;
-        if (!this.config.rootURL.endsWith('/') && !this.resourcePath.startsWith('/'))
-            url += '/';
-        url += this.resourcePath;
-        if (url.endsWith('/'))
-            url = url.substr(0, url.length - 1);
-        if (this.key)
-            url += `(${this.key})`;
-        return url;
+    public getSingle<T>(key: string | number): Observable<T> {
+        if (!key)
+            throw this._getArgumentError('key');
+        return this._execute<T>(key);
+    }
+
+    public getCollection<T>(): Observable<T[]> {
+        return this._execute<IODataResult<T[]>>().pipe(map(r => r.value));
+    }
+
+    private _execute<R>(key?: string | number, propertyPath?: string): Observable<R> {
+        return this.client.get<R>(this.config, this.resourcePath, key, propertyPath, this._getQueryOptions());
     }
 
     private _getQueryOptions(): HttpParams {

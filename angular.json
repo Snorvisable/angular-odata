@@ -20,7 +20,15 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "projects/angular-odata/test/test.ts",
-            "tsConfig": "projects/angular-odata/tsconfig.spec.json",
+            "tsConfig": "projects/angular-odata/test/tsconfig.spec.json",
+            "karmaConfig": "projects/angular-odata/karma.conf.js"
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/angular-odata/e2e/test.ts",
+            "tsConfig": "projects/angular-odata/e2e/tsconfig.spec.json",
             "karmaConfig": "projects/angular-odata/karma.conf.js"
           }
         },

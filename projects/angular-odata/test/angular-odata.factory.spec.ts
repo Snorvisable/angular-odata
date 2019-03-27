@@ -3,13 +3,15 @@ import { ODataFactory } from '../src/lib/angular-odata.factory';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ODataConfig } from '../src/lib/angular-odata.config';
+import { ODataClient } from '../src/lib/angular-odata.client';
 
 describe('ODataFactory', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       ODataConfig,
       ODataFactory,
-      HttpClient
+      HttpClient,
+      ODataClient
     ],
     imports: [
       HttpClientTestingModule

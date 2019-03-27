@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ODataConfig } from '../src/lib/angular-odata.config';
 import { ODataService } from '../src/lib/angular-odata.service';
+import { ODataClient } from '../src/lib/angular-odata.client';
 
 describe('ODataService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       ODataConfig,
-      HttpClient
+      HttpClient,
+      ODataClient
     ],
     imports: [
       HttpClientTestingModule
@@ -16,9 +18,9 @@ describe('ODataService', () => {
   }));
 
   describe('GetCollection', () => {
-    it('Should return ODataQuery', inject([HttpClient, ODataConfig], (http: HttpClient, config: ODataConfig) => {
+    it('Should return ODataQuery', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
-      const service = new ODataService(http, config, 'resource');
+      const service = new ODataService(client, config, 'resource');
 
       // Act
       const query = service.getCollection();
@@ -29,9 +31,9 @@ describe('ODataService', () => {
   });
 
   describe('GetSingle', () => {
-    it('Should throw on invalid key', inject([HttpClient, ODataConfig], (http: HttpClient, config: ODataConfig) => {
+    it('Should throw on invalid key', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
-      const service = new ODataService(http, config, 'resource');
+      const service = new ODataService(client, config, 'resource');
 
       // Act
       const getSingleFn = () => service.getSingle(null);
@@ -40,9 +42,9 @@ describe('ODataService', () => {
       expect(getSingleFn).toThrowError('The value for parameter \'key\' is not valid.');
     }));
 
-    it('Should return ODataQuery', inject([HttpClient, ODataConfig], (http: HttpClient, config: ODataConfig) => {
+    it('Should return ODataQuery', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
       // Assign
-      const service = new ODataService(http, config, 'resource');
+      const service = new ODataService(client, config, 'resource');
 
       // Act
       const query = service.getSingle(1);
