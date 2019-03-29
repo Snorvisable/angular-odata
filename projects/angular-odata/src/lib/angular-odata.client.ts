@@ -1,8 +1,14 @@
 import { ODataConfig } from './angular-odata.config';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
+
+export enum ODataReturnModification {
+    default = '',
+    representation = 'representation',
+    minimal = 'minimal'
+}
 
 @Injectable({ providedIn: 'root' })
 export class ODataClient {
@@ -12,27 +18,43 @@ export class ODataClient {
         const url = this.getURL(config.rootURL, resourcePath, key, propertyPath);
         return this.http.get(url, {
             params: params
-        }).pipe(map(r => {
-            const keys = Object.keys(r).filter(property => !property.startsWith('@odata'));
-            // If the result is singular it is available inside the 'value' property.
-            if (keys.length === 1 && keys[0] === 'value') {
-                return r['value'] as T;
-            }
-            // Otherwise it is available in the current result.
-            const result: T = {} as T;
-            keys.forEach(p => result[p] = r[p]);
-            return result;
-        }));
+        }).pipe(map(response => this.deserializeResponse(response)));
     }
 
-    public post<T>(config: ODataConfig, resourcePath: string, entity: T): Observable<T> {
+    public post<T>(config: ODataConfig, resourcePath: string, entity: T, returnModification: ODataReturnModification): Observable<T> {
         const url = this.getURL(config.rootURL, resourcePath);
-        return this.http.post<T>(url, entity);
+        return this.http.post(url, entity, {
+            headers: this.getHeaders(returnModification)
+        }).pipe(map(response => this.deserializeResponse(response)));
     }
 
-    public put<T>(config: ODataConfig, resourcePath: string, entity: T): Observable<T> {
-        const url = this.getURL(config.rootURL, resourcePath);
-        return this.http.put<T>(url, entity);
+    public patch<T>(config: ODataConfig, resourcePath: string, key: string | number, entity: Partial<T>, returnModification: ODataReturnModification): Observable<T> {
+        const url = this.getURL(config.rootURL, resourcePath, key);
+        return this.http.patch<T>(url, entity, {
+            headers: this.getHeaders(returnModification)
+        });
+    }
+
+    public put<T>(config: ODataConfig, resourcePath: string, key: string | number, entity: T, returnModification: ODataReturnModification): Observable<T> {
+        const url = this.getURL(config.rootURL, resourcePath, key);
+        return this.http.put<T>(url, entity, {
+            headers: this.getHeaders(returnModification)
+        });
+    }
+
+    public delete(config: ODataConfig, resourcePath: string, key: string | number): Observable<Object> {
+        const url = this.getURL(config.rootURL, resourcePath, key);
+        return this.http.delete(url, {
+            headers: this.getHeaders()
+        });
+    }
+
+    private getHeaders(returnModification: ODataReturnModification = ODataReturnModification.default): HttpHeaders {
+        let headers = new HttpHeaders().append('Content-Type', 'application/json');
+        if(returnModification !== ODataReturnModification.default) {
+            headers = headers.append('Prefer', 'return=' + returnModification);
+        }
+        return headers;
     }
 
     private getURL(rootURL: string, resourcePath: string, key?: string | number, propertyPath?: string): string {
@@ -59,7 +81,19 @@ export class ODataClient {
         return url;
     }
 
-    protected getArgumentError(parameter: string): Error {
+    private getArgumentError(parameter: string): Error {
         return new Error(`The value for parameter \'${parameter}\' is not valid.`);
+    }
+
+    private deserializeResponse<T>(response: Object): T {
+        const keys = Object.keys(response).filter(property => !property.startsWith('@odata'));
+        // If the result is singular it is available inside the 'value' property.
+        if (keys.length === 1 && keys[0] === 'value') {
+            return response['value'] as T;
+        }
+        // Otherwise it is available in the current result.
+        const result: T = {} as T;
+        keys.forEach(p => result[p] = response[p]);
+        return result;
     }
 }

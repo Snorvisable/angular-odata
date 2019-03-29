@@ -1,6 +1,7 @@
 import { IODataQuery, ODataQuery } from './angular-odata.query';
 import { ODataConfig } from './angular-odata.config';
-import { ODataClient } from './angular-odata.client';
+import { ODataClient, ODataReturnModification } from './angular-odata.client';
+import { Observable } from 'rxjs';
 
 export class ODataService<T> {
 
@@ -10,19 +11,19 @@ export class ODataService<T> {
     return new ODataQuery<T>(this.client, this.config, this.resourcePath);
   }
 
-  public Post(entity: T): T {
-    return null;
+  public post(entity: T, returnModification: ODataReturnModification = ODataReturnModification.default): Observable<T> {
+    return this.client.post<T>(this.config, this.resourcePath, entity, returnModification);
   }
 
-  public Patch(entity: T, key: string | number): T {
-    return null;
+  public patch(entity: T, key: string | number, returnModification: ODataReturnModification = ODataReturnModification.default): Observable<T> {
+    return this.client.patch<T>(this.config, this.resourcePath, key, entity, returnModification);
   }
 
-  public Put(entity: T, key: string | number): T {
-    return null;
+  public put(entity: T, key: string | number, returnModification : ODataReturnModification = ODataReturnModification.default): Observable<T> {
+    return this.client.put<T>(this.config, this.resourcePath, key, entity, returnModification);
   }
 
-  public Delete(key: string | number): T {
-    return null;
+  public delete(key: string | number): Observable<Object> {
+    return this.client.delete(this.config, this.resourcePath, key);
   }
 }

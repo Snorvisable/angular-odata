@@ -8,17 +8,17 @@ export interface Person {
     UserName: string;
     FirstName: string;
     LastName: string;
-    MiddleName: string;
-    Gender: PersonGender;
-    Age: number;
-    Emails: string[];
-    AddressInfo: Location[];
-    HomeAddress: Location;
-    FavoriteFeature: Feature;
-    Features: Feature[];
+    MiddleName?: string;
+    Gender?: PersonGender;
+    Age?: number;
+    Emails?: string[];
+    AddressInfo?: Location[];
+    HomeAddress?: Location;
+    FavoriteFeature?: Feature;
+    Features?: Feature[];
 
     // Navigation properties
-    Friends: Person[];
-    BestFriend: Person;
-    Trips: Trip[];
+    Friends?: Person[];
+    BestFriend?: Person;
+    Trips?: Trip[];
 }
