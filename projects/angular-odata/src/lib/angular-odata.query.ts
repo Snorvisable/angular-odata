@@ -2,9 +2,7 @@ import { IODataFilterQuery, ODataFilterQuery } from './filter/angular-odata-filt
 import { HttpParams } from '@angular/common/http';
 import { ODataConfig } from './angular-odata.config';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { ODataClient } from './angular-odata.client';
-import { IODataResult } from './angular-odata.result';
 
 export enum ODataOrderDirection {
     ascending = 'asc',
@@ -21,8 +19,9 @@ export interface IODataQuery<T> {
     getCount(): Observable<number>;
     getCollection(): Observable<T[]>;
     getSingle(key: string | number): Observable<T>;
-    getPropertyValue(key: string | number, property: string): Observable<string>;
-    getComplexPropertyValue<P>(key: string | number, property: string): Observable<P>;
+    getPropertyValue<P>(key: string | number, property: string): Observable<P>;
+    // getComplexPropertyValue<P>(key: string | number, property: string): Observable<P>;
+    // getComplexPropertyValues<P>(key: string | number, property: string): Observable<P[]>;
 }
 
 export class ODataQuery<T> implements IODataQuery<T>{
@@ -98,15 +97,7 @@ export class ODataQuery<T> implements IODataQuery<T>{
         return null;
     }
 
-    public getPropertyValue(key: string | number, property: string): Observable<string> {
-        if (!key)
-            throw this._getArgumentError('key');
-        if (!property)
-            throw this._getArgumentError('property');
-        return this._execute<IODataResult<string>>(key, property).pipe(map(r => r.value));
-    }
-
-    public getComplexPropertyValue<P>(key: string | number, property: string): Observable<P> {
+    public getPropertyValue<P>(key: string | number, property: string): Observable<P> {
         if (!key)
             throw this._getArgumentError('key');
         if (!property)
@@ -121,7 +112,7 @@ export class ODataQuery<T> implements IODataQuery<T>{
     }
 
     public getCollection<T>(): Observable<T[]> {
-        return this._execute<IODataResult<T[]>>().pipe(map(r => r.value));
+        return this._execute<T[]>();
     }
 
     private _execute<R>(key?: string | number, propertyPath?: string): Observable<R> {

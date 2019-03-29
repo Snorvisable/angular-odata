@@ -81,16 +81,23 @@ describe('OData', () => {
   describe('GetPropertyValue', () => {
     it('Should get the firstName of a person.', async(() => {
       const userName = "georginabarlow";
-      service.query().getPropertyValue(userName, "UserName").subscribe(result => {
+      service.query().getPropertyValue<string>(userName, "UserName").subscribe(result => {
         expect(result).toBeTruthy();
         expect(result).toEqual(userName);
       });
     }));
 
     it('Should get the bestFriend of a person.', async(() => {
-      service.query().getComplexPropertyValue<Person>("georginabarlow", "BestFriend").subscribe(result => {
+      service.query().getPropertyValue<Person>("georginabarlow", "BestFriend").subscribe(result => {
         expect(result).toBeTruthy();
         expect(result.UserName).toEqual("angelhuffman");
+      });
+    }));
+
+    it('Should get the friends of a person.', async(() => {
+      service.query().getPropertyValue<Person[]>("georginabarlow", "Friends").subscribe(result => {
+        expect(result).toBeTruthy();
+        expect(result.length).toEqual(1);
       });
     }));
   });
