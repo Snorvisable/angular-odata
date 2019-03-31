@@ -5,7 +5,7 @@ This library exposes a service for easy communication with OData endpoints. Use 
 
 # Quick set-up
 1. Add @snorvisable/angular-odata to the dependencies in the project.json file.
-`"@snorvisable/angular-odata": "0.2.1"`
+`"@snorvisable/angular-odata": "0.2.2"`
 2. Import the `AngularODataModule` in app.module.ts.
 3. Create a new class extending `ODataConfig` and add it to the providers. Replace rootUrl with the root url of the API you'd like to query:
 ```javascript
