@@ -3,7 +3,7 @@ import { ODataConfig } from './angular-odata.config';
 import { ODataService } from './angular-odata.service';
 import { ODataClient } from './angular-odata.client';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ODataFactory {
 
   constructor(private client: ODataClient, private config: ODataConfig) { }

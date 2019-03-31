@@ -14,7 +14,7 @@ describe('ODataFactory', () => {
       ODataClient
     ],
     imports: [
-      HttpClientTestingModule
+      HttpClientTestingModule,
     ]
   }));
 
