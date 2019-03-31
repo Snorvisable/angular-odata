@@ -81,10 +81,6 @@ export class ODataClient {
         return url;
     }
 
-    private getArgumentError(parameter: string): Error {
-        return new Error(`The value for parameter \'${parameter}\' is not valid.`);
-    }
-
     private deserializeResponse<T>(response: Object): T {
         const keys = Object.keys(response).filter(property => !property.startsWith('@odata'));
         // If the result is singular it is available inside the 'value' property.

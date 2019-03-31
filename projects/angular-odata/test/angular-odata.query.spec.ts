@@ -164,6 +164,20 @@ describe('ODataQuery', () => {
       expect(query).toBeTruthy();
       expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
     }));
+    it('Should execute custom filter', inject([ODataClient, ODataConfig], (client: ODataClient, config: ODataConfig) => {
+      // Assign
+      const query: IODataQuery<{}> = new ODataQuery(client, config, 'resource');
+      spyOn(client, 'get').and.returnValue(new Observable<Response>());
+
+      // Act
+      query.filter('name eq \'Snorvisable\' and age gt 24').getCollection();
+
+      const params = new HttpParams().append('$filter', 'name eq \'Snorvisable\' and age gt 24');
+
+      // Assert
+      expect(query).toBeTruthy();
+      expect(client.get).toHaveBeenCalledWith(config, 'resource', undefined, undefined, params);
+    }));
   });
 
   describe('OrderBy', () => {

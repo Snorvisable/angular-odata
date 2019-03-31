@@ -12,6 +12,7 @@ export enum ODataOrderDirection {
 export interface IODataQuery<T> {
     expand(properties: string[]): IODataQuery<T>
     filter(filterAction: (filterQuery: IODataFilterQuery) => void): IODataQuery<T>;
+    filter(filterString: string): IODataQuery<T>;
     orderBy(property: string, direction: ODataOrderDirection): IODataQuery<T>;
     select(properties: string[]): IODataQuery<T>;
     skip(count: number): IODataQuery<T>;
@@ -55,10 +56,17 @@ export class ODataQuery<T> implements IODataQuery<T>{
         return this;
     }
 
-    public filter(filterAction: (filterQuery: IODataFilterQuery) => void): IODataQuery<T> {
-        const filterQuery = new ODataFilterQuery();
-        filterAction(filterQuery);
-        this._filter = filterQuery.toString();
+    public filter(filterString: ''): IODataQuery<T>;
+    public filter(filterAction: (filterQuery: IODataFilterQuery) => void): IODataQuery<T>;
+    public filter(filterActionOrString: ((filterQuery: IODataFilterQuery) => void) | string) {
+        if (typeof filterActionOrString === "string") {
+            this._filter = filterActionOrString;
+        }
+        else {
+            const filterQuery = new ODataFilterQuery();
+            filterActionOrString(filterQuery);
+            this._filter = filterQuery.toString();
+        }
         return this;
     }
 
