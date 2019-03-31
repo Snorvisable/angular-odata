@@ -2,7 +2,7 @@ import { TestBed, async } from "@angular/core/testing";
 import { ODataTestingConfig } from './angular-odata.config';
 import { ODataFactory, ODataConfig, ODataService } from '../src/public_api';
 import { Person } from './models/people/person';
-import { AngularOdataModule } from '../src/lib/angular-odata.module';
+import { AngularODataModule } from '../src/lib/angular-odata.module';
 
 describe('OData', () => {
   let service: ODataService<Person>;
@@ -12,7 +12,7 @@ describe('OData', () => {
         { provide: ODataConfig, useClass: ODataTestingConfig }
       ],
       imports: [
-        AngularOdataModule
+        AngularODataModule
       ]
     });
     const factory = TestBed.get(ODataFactory) as ODataFactory;

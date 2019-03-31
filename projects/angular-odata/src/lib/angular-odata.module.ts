@@ -19,4 +19,4 @@ import { ODataInterceptor } from './angular-odata.interceptor';
     }
   ]
 })
-export class AngularOdataModule { }
+export class AngularODataModule { }
